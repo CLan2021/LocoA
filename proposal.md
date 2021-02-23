@@ -17,6 +17,26 @@ I don't know much about the LAM data type. Can you provide links to some example
 How will you structure your code? Perhaps (1) a class for loading LAM and CSV data files and checking they are formatted appropriately; (2) a class for performing circadian rhythm analyses, generating these types of plots, and statistics; and (3) a class for 3D scatterplot analyses, with options to modify style settings for the output plots.
 
 
+# Proposal
+- What task/goal will the project accomplish and why is this useful?
+
+The project will provide tools to analyze Locomotor Activity Monitor (LAM) data and return plots of daily circadian rhythm, 3D scatter analysis, etc. of activity counts. It is especially useful when the datasets start to get big, being able to automatize the process for cleaning, parsing, and analyzing data.
+
+- What type of data/input will a user provide to the program?
+
+The types of data/input are .txt files and a meta dataset organized in a CSV file.
+
+- Where will the data come from?
+
+The data will come from user's input (e.g. CSV file, cleaned .txt output file from the LAM device)
+
+- What type of output will the program produce (e.g., text, plots)?
+
+The program will produce 3D scatter plots, multi line plots, ....?
+
+- What other tools currently exist to do this task, or something similar?
+
+There's a program called ShinyR-DAM that uses .txt output files from the *Drosophila* Activity Monitor (DAM) system, producing customizable plots and CSV files.
 
 ### Description of project goal
 My project will provide tools to analyze Locomotor Activity Monitor (LAM) data and return plots of daily circadian rhythm, 3D scatter analysis, etc. of activity counts.
