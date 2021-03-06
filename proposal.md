@@ -3,7 +3,25 @@ An outline of a new project idea (for now)
 
 
 # Comments
-## Questions
+- What task/goal will the project accomplish and why is this useful?
+(this should be a concise statement that would convince a user that your program is worth their time to read more about and try using.
+
+
+- What type of data/input will a user provide to the program?
+
+
+- Where will the data come from?
+
+
+- How will a user interact with the program?
+
+
+- What type of output will the program produce (e.g., text, plots)?
+
+
+- What other tools currently exist to do this task, or something similar?
+
+
 - What other methods currently exist to analyze this type of data? How will your program fill a niche that these other program do not? Example, it will have more options? or it will be easier to use? Or it will be in Python?
 
 - What are some examples of circadian rhythm or 3D scatter analysis plots you wish to produce? What type of statistical inference tools in scikit-learn are best suited for this type of analysis? Perhaps look into clustering tools for the scatter plots, and gaussian process analyses for the circadian rhythms?
