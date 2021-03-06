@@ -1,11 +1,12 @@
-# myproject-name
-Copy your answer about what task/goal your project is intended to accomplish and enter it below the header as a text.
+# LocAnalysis
+My program "LocAnalysis" uses a combination of .txt output files from the Trikinetics Locomotor Activity Monitor device and a meta dataset that includes information on each test subject to create plots, perform statistical analyses, and generate predictions.
 
 
-### in development
+### In development
 
-Write a paragraph below this describing how developers can install the program locally to help work on the code. This should include instructions like the following:
+LocAnalysis is still under development. If you would like to install the program locally to help work on the code, please follow the instructions below:
 
+```
 conda install [list dependencies here...] -c conda-forge
 
 git clone [myproject-link]
@@ -13,3 +14,4 @@ git clone [myproject-link]
 cd ./myproject-name
 
 pip install -e .
+```
