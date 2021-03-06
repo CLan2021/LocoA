@@ -12,9 +12,9 @@ I am thinking of making **LocoA** into a CLI or API program where the user can e
 ### What type of output will the program produce (e.g., text, plots)?
 **LocoA** will produce various plots (scatter plots and line graphs) and results of statistical analyses as well as model predictions. 
 
-![scatter plot](scatterplot.png){:height="50%" width="50%"}
+<img src="scatterplot.png" width="100" height="100">
 
-![line plot](lineplot.png){:height="50%" width="50%"}
+<img src="lineplot.png" width="100" height="100">
 
 ### What other tools currently exist to do this task, or something similar?
 There is a program called [`ShinyR-DAM`](https://github.com/KarolCichewicz/ShinyR-DAM.git) that operates in the cloud or can be downloaded and run locally using RStudio. While this program also produces plots and summary tables, it is only designed to analyze data recorded by the Drosophila Activity Monitor (DAM) system (Trikinetics, Waltham, MA) and has limited or fixed options for additional parameters.
