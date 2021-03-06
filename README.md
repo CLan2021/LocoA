@@ -7,11 +7,12 @@ My program "LocAnalysis" uses a combination of .txt output files from the Trikin
 LocAnalysis is still under development. If you would like to install the program locally to help work on the code, please follow the instructions below:
 
 ```
-conda install [list dependencies here...] -c conda-forge
+# stay tuned, more to be released soon...
+conda install [list dependencies here...] -c conda-forge ...
 
-git clone [myproject-link]
+git clone https://github.com/CLan2021/LocAnalysis.git
 
-cd ./myproject-name
+cd ./LocAnalysis
 
 pip install -e .
 ```
