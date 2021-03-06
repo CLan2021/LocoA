@@ -1,5 +1,5 @@
 # LocAnalysis
-My program "LocAnalysis" uses a combination of .txt output files from the Trikinetics Locomotor Activity Monitor device and a meta dataset that includes information on each test subject to create plots, perform statistical analyses, and generate predictions.
+My program "LocoA" uses a combination of .txt output files from the Trikinetics Locomotor Activity Monitor device and a meta dataset that includes information on each test subject to create plots, perform statistical analyses, and generate predictions.
 
 
 ### In development
