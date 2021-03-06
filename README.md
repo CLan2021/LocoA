@@ -10,9 +10,9 @@ LocAnalysis is still under development. If you would like to install the program
 # stay tuned, more to be released soon...
 conda install [list dependencies here...] -c conda-forge ...
 
-git clone https://github.com/CLan2021/LocAnalysis.git
+git clone https://github.com/CLan2021/LocoA.git
 
-cd ./LocAnalysis
+cd ./LocoA
 
 pip install -e .
 ```
