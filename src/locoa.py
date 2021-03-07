@@ -1,5 +1,18 @@
 #!/usr/bin/env python
 
+"""
+These python code works. It might be easier to run them in jupyter notebook 
+using the locoa_nb_version.ipynb provided in the directory.
+
+Need help with organizing scripts into "functions(def)" and "Class" objects.
+
+Ideas for structuring my codes:
+Perhaps (1) a class for loading LAM and CSV data files and checking they are formatted appropriately; 
+(2) a class for generating plots (3d scatter plots, line graphs, etc.) and 
+(3) a class for performing statistical analyses (chisquare)
+
+"""
+
 #from sys import call_tracing
 import os
 import pandas as pd
