@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-These python code works. It might be easier to run them in jupyter notebook 
+These python codes work. It might be easier to run them in jupyter notebook 
 using the locoa_nb_version.ipynb provided in the directory.
 
 Need help with organizing scripts into "functions(def)" and "Class" objects.
