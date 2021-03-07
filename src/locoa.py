@@ -24,6 +24,18 @@ group_func = 'mean_and_median'
 # umap n_neighbors argument
 nn = 50
 
+reducers = {
+    'pca': PCA(n_components=3),
+    'umap': umap.UMAP(n_components=3, metric='cosine', n_neighbors=nn, random_state=5566)
+}
+
+reducer_name = 'umap'
+reducer = reducers[reducer_name]
+custom_profile = 'cosine-nn%d' % nn
+profile = '_'.join([reducer_name, 'log' if use_log else 'nolog', group_func, 'stf' if use_std else 'nostd', 'ignore%d' % ignored, custom_profile])
+print(profile)
+
+### read in actual data (.txt output files and meta dataset)
 conv_size = 3
 txts = [f for f in os.listdir('./data') if f.endswith('.txt')]
 monitor_cleaned_smooths = []
