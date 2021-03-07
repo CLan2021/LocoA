@@ -16,6 +16,6 @@ setup(
     description="A package for analyzing locomotor activity data",
     classifiers=["Programming Language :: Python :: 3"],
     entry_points={ 
-        #'console_scripts':["module = directory.__main__:main"]
+        
     },
 )
