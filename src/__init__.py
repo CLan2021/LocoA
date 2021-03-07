@@ -2,4 +2,4 @@
 
 __version__ = "0.0.1"
 
-from src.main import LocAnalysis
+from src.locoa import LocoA
