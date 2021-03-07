@@ -8,7 +8,10 @@ LocAnalysis is still under development. If you would like to install the program
 
 ```
 # stay tuned, more to be released soon...
-conda install [list dependencies here...] -c conda-forge ...
+# conda install [list dependencies here...] -c conda-forge ...
+
+conda install pandas numpy matplotlib scikit-learn umap-learn mpld3 scipy -c conda-forge
+conda install -c jmcmurray os
 
 git clone https://github.com/CLan2021/LocoA.git
 
