@@ -1,30 +1,40 @@
 #!/usr/bin/env python
 
 """
-These python codes work. It might be easier to run them in jupyter notebook 
-using the locoa_nb_version.ipynb provided in the directory.
-
-Need help with organizing scripts into "functions(def)" and "Class" objects.
-
-Ideas for structuring my codes:
-Perhaps (1) a class for loading LAM and CSV data files and checking they are formatted appropriately; 
+Ideas for structuring codes:
+(1) a class for loading LAM and CSV data files and checking they are formatted appropriately; 
 (2) a class for generating plots (3d scatter plots, line graphs, etc.) and 
 (3) a class for performing statistical analyses (chisquare)
 
 """
 
-#from sys import call_tracing
+from sys import call_tracing
 import os
 import pandas as pd
 import numpy as np
 import umap
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d.axes3d as p3
-from sklearn.cluster import DBSCAN, KMeans
-from sklearn.cluster import pairwise_distances
+from sklearn.cluster import DBSCAN, KMeans, OPTICS
+from sklearn.metrics import pairwise_distances
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.metrics import accuracy_score
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+
+from scipy.stats import chisquare
+
+
+class Simulator:
+    """
+    a class object to load LAM txt output files and format CSV meta dataset.
+    """
 
 win_size = 10
 use_log = True
@@ -135,8 +145,10 @@ monitor_cleaned_smooths_union = pd.concat(monitor_cleaned_smooths).reset_index(d
 
 ### plot-1 
 # 3D scatter plot function
-def scatter3d(data3d, color_map=None, azimuth=-74, elevation=54, figsize=(10, 10)):
-
+def scatter3d(self, data3d, color_map=None, azimuth=-74, elevation=54, figsize=(10, 10)):
+    """
+    Build a 3d scatter plot. Currently not used.
+    """
     fig = plt.figure(figsize=figsize)
     ax = p3.Axes3D(fig)
     ax.view_init(elevation, azimuth)
@@ -147,7 +159,11 @@ def scatter3d(data3d, color_map=None, azimuth=-74, elevation=54, figsize=(10, 10
         ax.scatter(data3d[:,0], data3d[:,1], data3d[:,2], color=plt.cm.jet(color_map), s=30, edgecolor='k')
     return ax
 
-def stdscaler(X, use_std=True):
+
+def stdscaler(self, X, use_std=True):
+    """
+    Standardize data.
+    """
     if use_std:
         return StandardScaler().fit_transform(X)
     else:
@@ -168,76 +184,91 @@ pwdists.shape
 
 
 ### DBSCAN, define plot properties
-min_samples = 20
 
-shortest_dists_mean = np.take_along_axis(pwdists, np.argsort(pwdists)[:,1:(1+min_samples)], axis=1).mean(axis=1)
-shortest_dists_mean_std = shortest_dists_mean.std()
-# assume normal distribution
-eps = shortest_dists_mean.mean() + 2 * shortest_dists_mean.std
-clusterer = DBSCAN(eps=eps, min_samples=min_samples)
-group_idxs_ = clusterer.fit_predict(dr) + 1
+def get_group_idxs(self):
+    """
+    Define clustering algorithm and create group indices.
+    """
+#min_samples = 20
+    shortest_dists_mean = np.take_along_axis(pwdists, np.argsort(pwdists)[:,1:(1+min_samples)], axis=1).mean(axis=1)
+    shortest_dists_mean_std = shortest_dists_mean.std()
+    eps = shortest_dists_mean.mean() + 2 * shortest_dists_mean.std
+    clusterer = DBSCAN(eps=eps, min_samples=min_samples)
+    group_idxs_ = clusterer.fit_predict(dr) + 1
+    group_idxs  = group_idxs_[group_idxs_ > 0]
 
-### a different clustering method: KMeans
-#kmeans = KMeans(n_clusters=15, init='k-means++', n_init=10, random_state=5566).fit(act_digests_npy)
-#group_idxs_ = kmeans.predict(act_digests_npy) + 1
+    # Save the two variants of group indices to the class object
+    self.group_idxs_ = group_idxs_
+    self.group_idxs = group_idxs
 
-group_idxs = group_idxs_[group_idxs_ > 0]
-dr_wg = dr[group_idxs_ > 0]
-gcolor_map = group_idxs / (group_idxs.max() + 1)
 
-fig, axs = plt.subplots(2, 2, figsize=(15, 15))
-axs[0][0].scatter(dr_wg[:,0], dr_wg[:,1], c=gcolor_map)
-axs[0][1].scatter(dr_wg[:,2], dr_wg[:,1], c=gcolor_map)
-axs[1][0].scatter(dr_wg[:,0], dr_wg[:,2], c=gcolor_map)
+def dbscan_plot(self):
+    """
+    Create a 3d scatter plot using DBSCAN clustering analysis.
+    """
+    dr_wg = self.dr[self.group_idxs_ > 0]
+    gcolor_map = self.group_idxs / (self.group_idxs.max() + 1)
 
-for tid in range(dr_wg.shape[0]):
-    axs[0][0].text(dr_wg[tid,0], dr_wg[tid,1], group_idxs[tid])
-    axs[0][1].text(dr_wg[tid,2], dr_wg[tid,1], group_idxs[tid])
-    axs[1][0].text(dr_wg[tid,0], dr_wg[tid,2], group_idxs[tid])
-plt.show()
+    fig, axs = plt.subplots(2, 2, figsize=(15, 15))
+    axs[0][0].scatter(dr_wg[:,0], dr_wg[:,1], c=gcolor_map)
+    axs[0][1].scatter(dr_wg[:,2], dr_wg[:,1], c=gcolor_map)
+    axs[1][0].scatter(dr_wg[:,0], dr_wg[:,2], c=gcolor_map)
+
+    for tid in range(dr_wg.shape[0]):
+        axs[0][0].text(dr_wg[tid,0], dr_wg[tid,1], group_idxs[tid])
+        axs[0][1].text(dr_wg[tid,2], dr_wg[tid,1], group_idxs[tid])
+        axs[1][0].text(dr_wg[tid,0], dr_wg[tid,2], group_idxs[tid])
+
+    plt.show()
+
+
+def line_graph(self):
+    """
+    Visualize activity patterns by group idxs using line graph.
+    """
+    plt.figure(figsize=(20,10))
+    plt.plot(act_origs_npy[group_idxs == 1].mean(axis=0), color='purple')
+    plt.plot(act_origs_npy[group_idxs == 2].mean(axis=0), color='blue')
+    plt.plot(act_origs_npy[group_idxs == 3].mean(axis=0), color='green')
+    plt.plot(act_origs_npy[group_idxs == 3].mean(axis=0), color='yellow')
+
+    #light-on (light) = 899.33
+    #light-off (dark) = 659.33
+    plt.axvline(1439.33, linestyle='--')
+    plt.axvline(1439.33*2, linestyle='--')
+    plt.axvline(1439.33*3, linestyle='--')
 
 
 ### model prediction, Random Forest Classifier
+def model_training(self):
+    """
+    Model training / prediction.
+    """
+    # response variable: meta_union.(Instar, Source, Bury).values
+    s, y_ = np.unique(self.meta_union.Instar.values, return_inverse=True)
+    y_[self.meta_union.Instar.isna()] = -1
+    y = y_[y_ != -1]
 
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.metrics import accuracy_score
-from sklearn.svm import SVC
-from sklearn.linear_model import LogisticRegression
+    # predictor variable: 'Source', 'Gen', 'Sex'
+    x_ = self.meta_union[['Source']].copy()
+    x_['group'] = self.group_idxs_
+    x = x_[y_ != -1].copy()
 
-# define response/outcome variable (based on activity patterns)
-# changeable: meta_union.(Instar, Source, Bury).values
-s, y_ = np.unique(meta_union.Instar.values, return_inverse=True)
-y_[meta_union.Instar.isna()] = -1
-y = y_[y_ != -1]
-len(y)
-y.sum()
+    # if using group(in scatterplot) to predict outcome
+    #x_ = pd.DataFrame(group_idxs_, columns=['group'])
+    #x = x_[y_ != -1].copy()
 
-# define predictor variable
-# available param: 'Source', 'Gen', 'Sex'
-x_ = meta_union[['Source']].copy()
-x_['group'] = group_idxs_
-x = x_[y_ != -1].copy()
 
-# if using group(in scatterplot) to predict outcome
-x_ = pd.DataFrame(group_idxs_, columns=['group'])
-x = x_[y_ != -1].copy()
+    # Random Forest
+    rfc = RandomForestClassifier(random_state=42, max_depth=5, n_estimators=1000, criterion='entropy')
 
-# show meta_union columns (parameters)
-meta_union.columns
+    # fit model
+    # show param categories in array output
+    enc = OneHotEncoder(sparse=False).fit(x)
+    nex_x = enc.transform(x)
+    x_train, x_test, y_train, y_test = train_test_split(new_x, y, test_size=.5, random_state=42)
 
-# random forest model creation
-rfc = RandomForestClassifier(random_state=42, max_depth=5, n_estimators=1000, criterion='entropy')
-
-# fit model
-# show param categories in array output
-enc = OneHotEncoder(sparse=False).fit(x)
-nex_x = enc.transform(x)
-new_x.shape
-x_train, x_test, y_train, y_test = train_test_split(new_x, y, test_size=.5, random_state=42)
-enc.categories_
+    print(enc.categories_)
 
 # generate model predicton accuracy score
 rfc.fit(x_train, y_train)
@@ -253,89 +284,56 @@ np.argsort(rfc.feature_importances_)
 np.concatenate(enc.categories_ axis=0)[np.argsort(rfc.feature_importances_)][-5:]
 
 
-### plot-2
-# line graph of groups in scatterplot: mean actiivty patterns
-plt.figure(figsize=(20,10))
-# depending on the number of groups
-plt.plot(act_origs_npy[group_idxs == 0].mean(axis=0)) #blue
-plt.plot(act_origs_npy[group_idxs == 1].mean(axis=0)) #orange
-plt.plot(act_origs_npy[group_idxs == 2].mean(axis=0)) #green
-#plt.plot(act_origs_npy[group_idxs == 3].mean(axis=0)) #red
-#plt.plot(act_origs_npy[group_idxs == 4].mean(axis=0)) #purple
 
-#add vertical lines to separate activity patterns in 3 days
-#light-on (light) = 899.33
-#light-off (dark) = 659.33
-plt.axvline(1439.33, linestyle='--')
-plt.axvline(1439.33*2, linestyle='--')
-plt.axvline(1439.33*3, linestyle='--')
+def chi_square(self):
+    """
+    Run chi-sqaure analysis.
+    """
+    group_sizes = pd.DataFrame({'gid':self.group_idxs}).groupby('gid').size().values
 
+    # expected frequencies in each category. By default the categories are assumed to be equally likely.
+    f_exp = group_sizes / group_sizes.sum()
 
-### statistical analysis
-from scipy.stats import chisquare
+    # get candidate columns. Options: 'Source', 'Gen', 'Sex', 'Photo', 'Instar']
+    # cand_cols = [can add more than 1 option]
+    cand_cols = ['Source']
 
-group_sizes = pd.DataFrame({'gid':group_idxs}).groupby('gid').size().values
+    # create empty arrays to store chisquare results
+    biased_chars_all = np.array([])
+    chi2_all = np.array([])
+    pvalue_all = np.array([])
+    char_sample_size_all = np.array([])
+    cat_col_str_all = np.array([])
 
-# f_exp = expected frequencies in each category. By default the categories are assumed to be equally likely.
-f_exp = group_sizes / group_sizes.sum()
+    # For-loop over columns.
+    for i in range(len(cand_cols)):
+        for j in range(i, len(cand_cols)):
+            cat_col = list(np.unique([cand_cols[i], cand_cols[j]]))
 
-# cand_cols available options: 'Source', 'Gen', 'Sex', 'Photo', 'Instar']
-# cand_cols = [can add more than 1 option]
-cand_cols = ['Source']
+            meta_union = pd.concat(metas).reset_index(drop=True)
+            act_digests_npy = np.concatenate(act_digests)
 
-# create empty arrays to store chisquare results
-biased_chars_all = np.array([])
-chi2_all = np.array([])
-pvalue_all = np.array([])
-char_sample_size_all = np.array([])
-cat_col_str_all = np.array([])
+            cat_col_str = '_x_'.join(cat_col)
 
-for i in range(len(cand_cols)):
-    for j in range(i, len(cand_cols)):
-        cat_col = list(np.unique([cand_cols[i], cand_cols[j]]))
+            print(cat_col_str)
+            self.meta_union[cat_col_str] = self.meta_union[cat_col].replace(np.nan, 'NaN').astype(str).apply('_x_'.join, axis=1)
 
-        meta_union = pd.concat(metas).reset_index(drop=True)
-        act_digests_npy = np.concatenate(act_digests)
+            char_to_group = pd.DataFrame.from_dict({'gid': self.group_idxs, 'char': self.meta_union[cat_col_str].values[self.group_idxs_ > 0]}).pivot_table(index='gid', columns='char' aggfunc=len)
+            char_to_group = char_to_group.replace(np.nan, 0)
 
-        act_col_str = '_x_'.join(cat_col)
+            f_exp_weighted = char_to_group.sum().values * np.repeat(np.expand_dims(f_exp, axis=0), char_to_group.shape[1], axis=0).T
 
-        print(cat_col_str)
-        meta_union[cat_col_str] = meta_union[cat_col].replace(np.nan, 'NaN').astype(str).apply('_x_'.join, axis=1)
+            chi2test = chisquare(char_to_group, f_exp=f_exp_weighted)
 
-        char_to_group = pd.DataFrame.from_dict({'gid': group_idxs, 'char': meta_union[cat_col_str].values[group_idxs_ > 0]}).pivot_table(index='gid', columns='char' aggfunc=len)
-        char_to_group = char_to_group.replace(np.nan, 0)
+            pvalue_thres_idxs = (chi2test.pvalue < 0.05)
+            biased_chars = char_to_group.columns.values[pvalue_thres_idxs]
+            biased_chars_all = np.append(biased_chars_all, biased_chars)
+            chi2 = chi2test.statistic[pvalue_thres_idxs]
+            chi2_all = np.append(chi2_all, chi2)
+            pvalue_all = np.append(pvalue_all, chi2test.pvalue[pvalue_thres_idxs])
+            char_sample_size_all = np.append(char_sample_size_all, char_to_group.sum()[pvalue_thres_idxs].values)
+            cat_col_str_all = np.append(cat_col_str_all, np.repeat(cat_col_str, chi2.shape[0]))
 
-        f_exp_weighted = char_to_group.sum().values * np.repeat(np.expand_dims(f_exp, axis=0), char_to_group.shape[1], axis=0).T
-
-        chi2test = chisquare(char_to_group, f_exp=f_exp_weighted)
-
-### perform statistical analysis
-        # set pvalue threshold
-        pvalue_thres_idxs = (chi2test.pvalue < 0.05)
-        # 
-        biased_chars = char_to_group.columns.values[pvalue_thres_idxs]
-        biased_chars_all = np.append(biased_chars_all, biased_chars)
-        #
-        chi2 = chi2test.statistic[pvalue_thres_idxs]
-        chi2_all = np.append(chi2_all, chi2)
-        #
-        pvalue_all = np.append(pvalue_all, chi2test.pvalue[pvalue_thres_idxs])
-        #
-        char_sample_size_all = np.append(char_sample_size_all, char_to_group.sum()[pvalue_thres_idxs].values)
-        #
-        cat_col_str_all = np.append(cat_col_str_all, np.repeat(cat_col_str, chi2.shape[0]))
-
-        # print groups that are statistically significant
-        print(biased_chars)
-
-
-### print all results
-print(char_to_group)
-print(chi2test)
-print(pvalue_thres_idxs)
-print(biased_chars_all)
-print(chi2_all)
-print(pvalue_all)
-print(char_sample_size_all)
-print(cat_col_str_all)
+    # print stats results that are statistically significant
+    return biased_chars, char_to_group, chi2test, pvalue_thres_idxs, biased_chars_all, chi2_all, pvalue_all, char_sample_size_all, cat_col_str_all
 
