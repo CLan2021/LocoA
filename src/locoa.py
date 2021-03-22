@@ -30,6 +30,7 @@ from sklearn.linear_model import LogisticRegression
 
 from scipy.stats import chisquare
 
+from loguru import logger
 
 class Simulator:
     """
@@ -257,7 +258,7 @@ class Analysis:
             axs[0][0].text(dr_wg[tid,0], dr_wg[tid,1], group_idxs[tid])
             axs[0][1].text(dr_wg[tid,2], dr_wg[tid,1], group_idxs[tid])
             axs[1][0].text(dr_wg[tid,0], dr_wg[tid,2], group_idxs[tid])
-
+        logger.debug(f"show scatter plot")
         plt.show()
 
 
@@ -276,7 +277,7 @@ class Analysis:
         plt.axvline(1439.33, linestyle='--')
         plt.axvline(1439.33*2, linestyle='--')
         plt.axvline(1439.33*3, linestyle='--')
-
+        logger.debug(f"show line graph")
 
 
     def model_training(self):
