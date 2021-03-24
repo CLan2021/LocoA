@@ -31,5 +31,15 @@ I hope this is helpful in organizing code and making it reproducible and accessi
      - line 75: description of function is very bare bones. What is the profile string? What is each parameter? What are the conditional statements doing? It's tedious but would be helpful to have more detail 
 
 #### def format_data
-     - would be good if description of overall function had clear stepwise workflow description: what goes in, what goes out, and how  
-     - 
+     - would be good if description of overall function had clear stepwise workflow description: what goes in, what goes out, and how
+       - For example, what are win_size and conv_size doing? 
+     - line 102: question about `if` statement
+     - line 112: what is the convolve function used for?  
+     - line 118: what are your replacing here?
+     - line 119: what does 'h' stand for?
+     - lines 126-149: describe each chunk of code with the task it's doing
+
+
+### Class Analysis
+
+Will get to this soon...
