@@ -103,12 +103,13 @@ class Simulator:
                 print(txt)
                 continue
             
-            # Manipulating and rearranging files.
+            # Loading files and creating date, time, and cleaning number of columns/rows
             monitor = pd.read_csv('./data/%s' % txt, sep='\t', header=None) #load txt file as csv
             monitor = monitor.rename({1:'date', 2:'time'}, axis=1) #rename columns as date and time
             monitor_cleaned = pd.concat([monitor.iloc[:,1:3], monitor.iloc[:,10:]], axis=1) #concatenate row number, date, time, and from 10th beetle on 
             monitor_cleaned = monitor_cleaned.iloc[self.ignored:,:] #slice out problematic row 1440 I'm assuming?
             
+            # Adding columns and convolution
             monitor_cleaned_smooth = monitor_cleaned.iloc[:,2:].apply(np.convolve, v=np.ones(conv_size), mode='valid') #convolution transformation for dates?
             if self.use_log: #if log-scale
                 monitor_cleaned_smooth = np.log(monitor_cleaned_smooth + 1) #log+1 to avoid issues with log-scale I'm assuming?
@@ -117,8 +118,12 @@ class Simulator:
                                                 monitor_cleaned_smooth], axis=1) #cleaning up convolution
             hms = np.array([t.replace(' ', ':').split(':') for t in monitor_cleaned_smooth.time], dtype=int)
             monitor_cleaned_smooth['h'] = hms[:,0] #creating "h" column
-            monitor_cleaned_smooth['mNcell'] = hms[:,1] // win_size
+            monitor_cleaned_smooth['mNcell'] = hms[:,1] // win_size #creating 'mNcell' column 
             
+            # Creating night-time vs. day-time column
+            #This uses list comprehension to add a 'night_time' column that designates a row as 'night' if after 6pm, otherwise assigns as 'day'
+            monitor_cleaned_smooth = monitor_cleaned_smooth.assign(night_time = ['night' if x > 18:00:00 else 'day' for x in monitor_cleaned_smooth['time']])
+
             # Either calculate only mean, or both mean and median.
             if self.group_func == 'mean':
                 act_digest = pd.concat([monitor_cleaned_smooth.groupby(['h', 'mNcell']).mean().T, 
