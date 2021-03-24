@@ -122,7 +122,7 @@ class Simulator:
             
             # Creating night-time vs. day-time column
             #This uses list comprehension to add a 'night_time' column that designates a row as 'night' if after 6pm, otherwise assigns as 'day'
-            monitor_cleaned_smooth['timeofday'] = ['night' if time > 18 else 'day' for time in monitor_cleaned_smooth['time']])
+            monitor_cleaned_smooth['timeofday'] = ['night' if time > 18 else 'day' for time in monitor_cleaned_smooth['time']]
 
             # Either calculate only mean, or both mean and median.
             if self.group_func == 'mean':
