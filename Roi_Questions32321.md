@@ -37,7 +37,7 @@ I hope this is helpful in organizing code and making it reproducible and accessi
      - line 112: what is the convolve function used for?  
      - line 118: what are your replacing here?
      - lines 119-120: what do 'h' and 'mNcell' stand for?
-     - line 125: added night vs. day column
+     - line 125: added night vs. day column (still not working)
      - lines 127-150: describe each chunk of code with the task it's doing
 
 
