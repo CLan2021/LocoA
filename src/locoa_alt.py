@@ -46,7 +46,7 @@ class Simulator:
         custom_profile = False
         ):
         
-        # Store arguments.
+        # Store arguments [what does each one do?]
         self.use_log = use_log
         self.use_std = use_std
         self.ignored = ignored
@@ -63,7 +63,7 @@ class Simulator:
         # Load and store metadata.
         self.one_meta2 = pd.read_csv('./data/one_meta2.csv', sep='\t')
         
-        # Create list objects to be filled with data later.
+        # Create list objects to be filled with data later [what is each one?]
         self.act_digests = []
         self.act_origs = []
         self.metas = []
