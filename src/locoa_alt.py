@@ -121,8 +121,9 @@ class Simulator:
             monitor_cleaned_smooth['mNcell'] = hms[:,1] // win_size #creating 'mNcell' column 
             
             # Creating night-time vs. day-time column
-            #This uses list comprehension to add a 'night_time' column that designates a row as 'night' if after 7pm, otherwise assigns as 'day'
-            monitor_cleaned_smooth['timeofday'] = monitor_cleaned_smooth.apply(lambda x:'night' if int(x.strftime('%H')) > 19 else 'day')
+            monitor_cleaned_smooth['hour'] = monitor_cleaned_smooth['time'].astype(int) #converting hours to integers for easy classification
+            #use list comprehension to add a 'timeofday' column that designates a row as 'night' if after 7pm, otherwise assigns as 'day'
+            monitor_cleaned_smooth['timeofday'] = ['night' if x > 19 else 'day' for x in monitor_cleaned_smooth['hour']] 
 
             # Either calculate only mean, or both mean and median.
             if self.group_func == 'mean':
