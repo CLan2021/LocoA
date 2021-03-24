@@ -37,9 +37,10 @@ I hope this is helpful in organizing code and making it reproducible and accessi
      - line 112: what is the convolve function used for?  
      - line 118: what are your replacing here?
      - lines 119-120: what do 'h' and 'mNcell' stand for?
-     - line 125: added night vs. day column (still not working)
-     - lines 127-150: describe each chunk of code with the task it's doing
+     - lines 124-126: added hour and night vs. day columns (right now it's 7pm-4am but can be changed easily)
+     - lines 128-151: describe each chunk of code with the task it's doing
 
+You might want to think about adding a dataset like `act_digest` that groups by night vs. day here as well?
 
 ### Class Analysis
 
