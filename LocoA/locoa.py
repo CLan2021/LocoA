@@ -1,11 +1,7 @@
 #!/usr/bin/env python
 
 """
-Ideas for structuring codes:
-(1) a class for loading LAM and CSV data files and checking they are formatted appropriately; 
-(2) a class for generating plots (3d scatter plots, line graphs, etc.) and 
-(3) a class for performing statistical analyses (chisquare)
-
+LocoA code reorganized into class objects.
 """
 
 from sys import call_tracing
@@ -37,7 +33,7 @@ class Simulator:
     a class object to load LAM txt output files and format CSV meta dataset.
     """
 
-    # Initialize class instance. 
+    # Initialize class instance. All params are dafaults and can be changed.
     def __init__(
         self,
         use_log = True,
@@ -96,10 +92,8 @@ class Simulator:
             #### light dark filter implementation
             #hms = np.array([t.replace(' ', ':').split(':') for t in monitor_cleaned.time], dtype=int)
             #monitor_cleaned['h'] = hms[:,0]
-
             #light portion
             #monitor_cleaned = monitor_cleaned[(monitor_cleaned.h >= 5) & (monitor_cleaned.h <= 19)].iloc[:,:-1]
-
             #dark portion
             #monitor_cleaned = monitor_cleaned[(monitor_cleaned.h <= 5) | (monitor_cleaned.h >= 19)].iloc[:,:-1]
 
@@ -113,6 +107,11 @@ class Simulator:
             hms = np.array([t.replace(' ', ':').split(':') for t in monitor_cleaned_smooth.time], dtype=int)
             monitor_cleaned_smooth['h'] = hms[:,0]
             monitor_cleaned_smooth['mNcell'] = hms[:,1] // win_size
+
+            # Creating night-time vs. day-time column
+            monitor_cleaned_smooth['hour'] = monitor_cleaned_smooth['time'].str[:2].astype(int) #getting hour (first two characters) and setting as integer
+            #use list comprehension to add a 'timeofday' column that designates a row as 'night' if 7pm-5am, otherwise assigns as 'day'
+            monitor_cleaned_smooth['timeofday'] = ['night' if x > 19 & x < 5 else 'day' for x in monitor_cleaned_smooth['hour']] 
 
             # Either calculate only mean, or both mean and median.
             if group_func == 'mean':
@@ -258,7 +257,7 @@ class Analysis:
             axs[0][0].text(dr_wg[tid,0], dr_wg[tid,1], group_idxs[tid])
             axs[0][1].text(dr_wg[tid,2], dr_wg[tid,1], group_idxs[tid])
             axs[1][0].text(dr_wg[tid,0], dr_wg[tid,2], group_idxs[tid])
-        logger.debug(f"show scatter plot")
+        logger.debug(f"Loaded scatter plot")
         plt.show()
 
 
@@ -277,7 +276,7 @@ class Analysis:
         plt.axvline(1439.33, linestyle='--')
         plt.axvline(1439.33*2, linestyle='--')
         plt.axvline(1439.33*3, linestyle='--')
-        logger.debug(f"show line graph")
+        logger.debug(f"Loaded line graph")
 
 
     def model_training(self):
