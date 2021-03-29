@@ -27,6 +27,8 @@ from sklearn.linear_model import LogisticRegression
 
 from scipy.stats import chisquare
 
+from loguru import logger
+
 
 class Simulator:
     '''
@@ -256,6 +258,7 @@ class Analysis:
             axs[0][0].text(dr_wg[tid,0], dr_wg[tid,1], self.group_idxs[tid])
             axs[0][1].text(dr_wg[tid,2], dr_wg[tid,1], self.group_idxs[tid])
             axs[1][0].text(dr_wg[tid,0], dr_wg[tid,2], self.group_idxs[tid])
+        logger.debug(f"Loaded scatter plot")
         plt.show()
         
         
@@ -271,6 +274,7 @@ class Analysis:
         plt.axvline(1439.33, linestyle='--')
         plt.axvline(1439.33*2, linestyle='--')
         plt.axvline(1439.33*3, linestyle='--')
+        logger.debug(f"Loaded line graph")
         
         
     def model_training(self):
@@ -292,6 +296,10 @@ class Analysis:
         new_x = enc.transform(x)
         x_train, x_test, y_train, y_test = train_test_split(new_x, y, test_size=.5, random_state=42)
         
+        score = accuracy_score(y_test, rfc.predict(x_test))
+        importances = np.concatenate(enc.categories_, axis=0)[np.argsort(rfc.feature_importances_)][-5:]
+
+        return score, importances
         # The present Jupyter notebook example calls a lot of attributes without saving them to variables.  Are these
         # desired outputs of the model? Are they meant to be saved and used somewhere else? It's unclear to me how to
         # format the remaining code for this model.
@@ -344,5 +352,6 @@ class Analysis:
                 pvalue_all = np.append(pvalue_all, chi2test.pvalue[pvalue_thres_idxs])
                 char_sample_size_all = np.append(char_sample_size_all, char_to_group.sum()[pvalue_thres_idxs].values)
                 cat_col_str_all = np.append(cat_col_str_all, np.repeat(cat_col_str, chi2.shape[0]))
-                
+        
+        logger.debug(f"Show statistics")        
         return char_to_group, chi2test, pvalue_thres_idxs, biased_chars_all, chi2_all, pvalue_all, char_sample_size_all, cat_col_str_all

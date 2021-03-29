@@ -308,8 +308,8 @@ class Analysis:
 
         score = accuracy_score(y_test, rfc.predict(x_test))
         importances = np.concatenate(enc.categories_, axis=0)[np.argsort(rfc.feature_importances_)][-5:]    return score, importances
-
-    return score, importances
+        
+        return score, importances
 
 
 
