@@ -10,7 +10,7 @@ import pandas as pd
 import numpy as np
 import umap
 from matplotlib import pyplot as plt
-from mpl_toolkits.mplot3d.axes3d as p3
+import mpl_toolkits.mplot3d.axes3d as p3
 
 from sklearn.cluster import OPTICS, DBSCAN, KMeans
 from sklearn.metrics import pairwise_distances
