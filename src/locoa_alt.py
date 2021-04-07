@@ -121,9 +121,9 @@ class Simulator:
             monitor_cleaned_smooth['mNcell'] = hms[:,1] // win_size #creating 'mNcell' column 
             
             # Creating night-time vs. day-time column
-            monitor_cleaned_smooth['hour'] = monitor_cleaned_smooth['time'].str[:2].astype(int) #getting hour (first two characters) and setting as integer
+            #monitor_cleaned_smooth['hour'] = monitor_cleaned_smooth['time'].str[:2].astype(int) #getting hour (first two characters) and setting as integer
             #use list comprehension to add a 'timeofday' column that designates a row as 'night' if 7pm-4am, otherwise assigns as 'day'
-            monitor_cleaned_smooth['timeofday'] = ['night' if x > 19 & x < 4 else 'day' for x in monitor_cleaned_smooth['hour']] 
+            #monitor_cleaned_smooth['timeofday'] = ['night' if x > 19 & x < 4 else 'day' for x in monitor_cleaned_smooth['hour']] 
 
             # Either calculate only mean, or both mean and median.
             if self.group_func == 'mean':
@@ -202,23 +202,23 @@ class Analysis:
         self.group_idxs = None
         
     
-    def scatter3d(self, data3d, color_map=None, azimuth=-74, elevation=54, figsize=(10, 10)):
-        '''
-        Build 3D scatterplot.  (Currently doesn't link to anything else?)
-        '''
+    #def scatter3d(self, data3d, color_map=None, azimuth=-74, elevation=54, figsize=(10, 10)):
+        #'''
+        #Build 3D scatterplot.  (Currently doesn't link to anything else?)
+        #'''
 
-        fig = plt.figure(figsize=figsize)
-        ax = p3.Axes3D(fig)
-        ax.view_init(elevation, azimuth)
+        #fig = plt.figure(figsize=figsize)
+        #ax = p3.Axes3D(fig)
+        #ax.view_init(elevation, azimuth)
 
-        if color_map is None:
-            ax.scatter(data3d[:,0], data3d[:,1], data3d[:,2],
-                        s=30, edgecolor='k')
-        else:
-            ax.scatter(data3d[:,0], data3d[:,1], data3d[:,2],
-                        color=plt.cm.jet(color_map),
-                        s=30, edgecolor='k')
-        return ax
+        #if color_map is None:
+            #ax.scatter(data3d[:,0], data3d[:,1], data3d[:,2],
+                        #s=30, edgecolor='k')
+        #else:
+            #ax.scatter(data3d[:,0], data3d[:,1], data3d[:,2],
+                        #color=plt.cm.jet(color_map),
+                        #s=30, edgecolor='k')
+        #return ax
     
     
     def stdscaler(self, X, use_std=True):
