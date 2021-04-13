@@ -1,6 +1,6 @@
 #!/usr/bin/env/python
 """
-Defining fisheye center circle coordinates for future gap fraction calculation
+Plotting 3D scatter plot and line graph.
 """
 
 
@@ -13,7 +13,7 @@ from matplotlib import pyplot as plt
 
 class Plot:
     '''
-    A class object to analyze data.
+    A class object to visualize data.
     '''
     
     # Initialize class instance.  Param defaults of None are intended to be replaced with output from Simulator functions.
