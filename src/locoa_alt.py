@@ -29,7 +29,7 @@ from sklearn.linear_model import LogisticRegression
 from scipy.stats import chisquare
 
 
-class Simulator:
+class Dataloader:
     '''
     A class object to load LAM data and format CSV files.
     '''
@@ -170,7 +170,7 @@ class Simulator:
         act_digests_npy = np.concatenate(self.act_digests)
         act_origs_npy = np.concatenate(self.act_origs)
         monitor_cleaned_smooths_union = pd.concat(self.monitor_cleaned_smooths).reset_index(drop=True)
-        return meta_union, meta_sum, act_digests_npy, act_origs_npy, monitor_cleaned_smooths_union
+        return {"meta_union" = meta_union, "meta_sum" = meta_sum, "act_digests_npy" = act_digests_npy, "act_origs_npy" = act_origs_npy, "monitor_cleaned_smooths_union" = monitor_cleaned_smooths_union}
 
 
 class Analysis:
