@@ -36,6 +36,7 @@ class Analysis:
         nn = 50
         ):
         
+        self.Analysis = Analysis
         self.meta_union = meta_union
         self.act_digests_npy = act_digests_npy
         self.act_origs_npy = act_origs_npy
