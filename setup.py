@@ -15,7 +15,4 @@ setup(
     url="https://github.com/CLan2021/LocoA",
     description="A package for analyzing locomotor activity data",
     classifiers=["Programming Language :: Python :: 3"],
-    entry_points={ 
-        
-    },
 )
