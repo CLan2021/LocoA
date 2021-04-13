@@ -1,7 +1,7 @@
 #!/usr/bin/env/python
 
 """
-Defining fisheye center circle coordinates for future gap fraction calculation
+Run analyses including Random Forest Classifier model prediction and Chi-square test.
 """
 
 import umap
