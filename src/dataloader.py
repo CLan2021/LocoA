@@ -101,9 +101,9 @@ class Dataloader:
             monitor_cleaned_smooth['mNcell'] = hms[:,1] // win_size #creating 'mNcell' column 
             
             # Creating night-time vs. day-time column
-            monitor_cleaned_smooth['hour'] = monitor_cleaned_smooth['time'].str[:2].astype(int) #getting hour (first two characters) and setting as integer
+            #monitor_cleaned_smooth['hour'] = monitor_cleaned_smooth['time'].str[:2].astype(int) #getting hour (first two characters) and setting as integer
             #use list comprehension to add a 'timeofday' column that designates a row as 'night' if 7pm-4am, otherwise assigns as 'day'
-            monitor_cleaned_smooth['timeofday'] = ['night' if x > 19 & x < 4 else 'day' for x in monitor_cleaned_smooth['hour']] 
+            #monitor_cleaned_smooth['timeofday'] = ['night' if x > 19 & x < 4 else 'day' for x in monitor_cleaned_smooth['hour']] 
 
             # Either calculate only mean, or both mean and median.
             if self.group_func == 'mean':
@@ -150,4 +150,4 @@ class Dataloader:
         act_digests_npy = np.concatenate(self.act_digests)
         act_origs_npy = np.concatenate(self.act_origs)
         monitor_cleaned_smooths_union = pd.concat(self.monitor_cleaned_smooths).reset_index(drop=True)
-        return {"meta_union" = meta_union, "meta_sum" = meta_sum, "act_digests_npy" = act_digests_npy, "act_origs_npy" = act_origs_npy, "monitor_cleaned_smooths_union" = monitor_cleaned_smooths_union}
+        return meta_union, meta_sum, act_digests_npy, act_origs_npy, monitor_cleaned_smooths_union
