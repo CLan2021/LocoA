@@ -24,7 +24,7 @@ cd ./LocoA
 pip install -e .
 ```
 
-# stay tuned, more to be released soon...
+### stay tuned, more to be released soon...
 
 
 
