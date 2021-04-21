@@ -5,6 +5,7 @@ LocoA code reorganized into class objects.
 '''
 
 from sys import call_tracing
+from loguru import logger
 import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
@@ -68,6 +69,7 @@ class Dataloader:
         self.act_origs = []
         self.metas = []
         self.monitor_cleaned_smooths = []
+        logger.info(f"fetched data")
         
         
     def make_profile(self):
@@ -200,6 +202,7 @@ class Analysis:
         self.pwdists = None
         self.group_idxs_ = None
         self.group_idxs = None
+        self.indiv = len(meta_union)
     
     
     def stdscaler(self, X, use_std=True):
@@ -258,6 +261,7 @@ class Analysis:
         self.get_dr()
         self.get_pwdists()
         self.get_group_idxs()
+        logger.info(f"Running calculations")
         
     
     def dbscan_clustering(self):
@@ -275,7 +279,9 @@ class Analysis:
             axs[0][0].text(dr_wg[tid,0], dr_wg[tid,1], self.group_idxs[tid])
             axs[0][1].text(dr_wg[tid,2], dr_wg[tid,1], self.group_idxs[tid])
             axs[1][0].text(dr_wg[tid,0], dr_wg[tid,2], self.group_idxs[tid])
+        logger.info(f"created 3D scatter plot for: {self.indiv} individuals")
         plt.show()
+        
         
         
     def line_graph(self):
@@ -290,6 +296,9 @@ class Analysis:
         plt.axvline(1439.33, linestyle='--')
         plt.axvline(1439.33*2, linestyle='--')
         plt.axvline(1439.33*3, linestyle='--')
+        plt.xlabel("time")
+        plt.ylabel("activity counts")
+        logger.info(f"created line graph for 3 days of light-dark cycles")
         
         
     def model_training(self):
@@ -310,11 +319,22 @@ class Analysis:
         enc = OneHotEncoder(sparse=False).fit(x)
         new_x = enc.transform(x)
         x_train, x_test, y_train, y_test = train_test_split(new_x, y, test_size=.5, random_state=42)
+        categories = enc.categories_
+
+        # fit and predict
+        fitting = rfc.fit(x_train, y_train)
+        training_score = accuracy_score(y_train, rfc.predict(x_train))
+
+        # show results
+        score = accuracy_score(y_test, rfc.predict(x_test))
+        feature = np.concatenate(categories, axis=0)[np.argsort(rfc.feature_importances_)][-5:]
+
+        return f"Score: {score}, Feature importance: {feature}"
         
         # The present Jupyter notebook example calls a lot of attributes without saving them to variables.  Are these
         # desired outputs of the model? Are they meant to be saved and used somewhere else? It's unclear to me how to
         # format the remaining code for this model.
-        
+
         
     def chi_square(self):
         '''
