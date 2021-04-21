@@ -24,7 +24,9 @@ cd ./LocoA
 pip install -e .
 ```
 
-### stay tuned, more to be released soon...
+Currently, the program is designed to work on a Jupyter notebook.
+
+#### stay tuned, more to be released soon...
 
 
 
